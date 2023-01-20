@@ -1,4 +1,5 @@
 const express = require("express");
+const require = require("cors");
 const mongoose = require("mongoose");
 const fileUpload = require("express-fileupload");
 const cloudinary = require("cloudinary").v2;
@@ -6,6 +7,7 @@ require("dotenv").config();
 
 const app = express();
 app.use(express.json());
+app.use(cors());
 
 mongoose.set("strictQuery", false);
 mongoose.connect(process.env.MONGO_URI);
