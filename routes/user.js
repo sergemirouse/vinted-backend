@@ -34,9 +34,9 @@ router.post("/user/signup", async (req, res) => {
       newsletter: req.body.newsletter,
     });
 
-    if (!username || !email || !password || typeof newsletter !== "boolean") {
-      return res.status(400).json({ message: "Missing parameter" });
-    }
+    // if (!username || !email || !password || typeof newsletter !== "boolean") {
+    //   return res.status(400).json({ message: "Missing parameter" });
+    // }
     //console.log(newUser);
 
     if (emailRegistered) {
