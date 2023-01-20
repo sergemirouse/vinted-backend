@@ -1,5 +1,5 @@
 const express = require("express");
-const require = require("cors");
+const cors = require("cors");
 const mongoose = require("mongoose");
 const fileUpload = require("express-fileupload");
 const cloudinary = require("cloudinary").v2;
