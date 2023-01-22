@@ -40,10 +40,6 @@ router.post(
       await newOffer.save();
       console.log(newOffer);
 
-      //const token = req.headers.token;
-
-      // console.log(result);
-
       res.json(newOffer);
     } catch (error) {
       res.status(400).json({ message: error.message });
@@ -56,6 +52,7 @@ router.get("/offers", async (req, res) => {
     const { title, priceMin, priceMax, sort, page } = req.query;
 
     const filters = {};
+
     if (title) {
       filters.product_name = new RegExp(title, "i");
     }
@@ -68,14 +65,15 @@ router.get("/offers", async (req, res) => {
       if (filters.product_price) {
         filters.product_price.$lte = Number(priceMax);
       } else {
-        filters.product_price = { $lte: Number(priceMax) };
+        filters.product_price = { $gte: Number(priceMax) };
       }
     }
 
-    const sortFilter = [];
+    const sortFilter = {};
+
     if (sort === "price-asc") {
       sortFilter.product_price = "asc";
-    } else if (sort === "product-desc") {
+    } else if (sort === "price-desc") {
       sortFilter.product_price = "desc";
     }
 

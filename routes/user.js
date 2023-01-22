@@ -9,17 +9,17 @@ const User = require("../models/User");
 
 router.post("/user/signup", async (req, res) => {
   try {
-    const password = req.body.password;
-    //console.log(password);
-    const salt = uid2(16);
-    //console.log(salt);
-    const hash = SHA256(salt + password).toString(encBase64);
-    //console.log(hash);
-    const token = uid2(64);
-    //console.log(token);
+    const { username, email, password, newsletter } = req.body;
 
-    const username = req.body.username;
-    const emailRegistered = await User.findOne({ email: req.body.email });
+    if (!username || !email || !password || typeof newsletter !== "boolean") {
+      return res.status(400).json({ message: "Missing parameter" });
+    }
+
+    const salt = uid2(16);
+    const hash = SHA256(salt + password).toString(encBase64);
+    const token = uid2(64);
+
+    const emailRegistered = await User.findOne({ email });
 
     //console.log(emailRegistered);
 
@@ -28,16 +28,11 @@ router.post("/user/signup", async (req, res) => {
         username: req.body.username,
       },
       email: req.body.email,
-      hash: hash,
-      salt: salt,
-      token: token,
+      hash,
+      salt,
+      token,
       newsletter: req.body.newsletter,
     });
-
-    // if (!username || !email || !password || typeof newsletter !== "boolean") {
-    //   return res.status(400).json({ message: "Missing parameter" });
-    // }
-    //console.log(newUser);
 
     if (emailRegistered) {
       return res
@@ -45,20 +40,18 @@ router.post("/user/signup", async (req, res) => {
         .json({ error: { message: "This email address already exists" } });
     }
 
-    if (!username) {
-      return res.status(400).json({ message: "Please enter a username" });
-    }
     await newUser.save();
 
-    const Answer = {
+    const answer = {
       id: newUser._id,
       token: token,
       account: {
-        username: req.body.username,
+        username: newUser.account,
+        token: newUser.token,
       },
     };
 
-    res.json(Answer);
+    res.json(answer);
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
